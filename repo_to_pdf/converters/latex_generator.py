@@ -257,7 +257,7 @@ variables:
 \\makeatletter
 \\newenvironment{{CodeBlock}}{{%
     \\VerbatimEnvironment
-    \\begin{{Verbatim}}[commandchars=§«»,fontsize={code_fontsize}]%
+    \\begin{{Verbatim}}[commandchars=§«»,fontsize={code_fontsize},breakanywhere=false]%
 }}{{%
     \\end{{Verbatim}}%
 }}
