@@ -110,6 +110,10 @@ For more information, visit:
     setup_logging(verbose=args.verbose, quiet=args.quiet)
     logger = logging.getLogger(__name__)
 
+    # Ensure system dependencies (like Cairo on macOS) are available
+    from repo_to_pdf.core.system_utils import ensure_cairo_available
+    ensure_cairo_available()
+
     try:
         # Load configuration
         logger.info(f"Loading configuration from: {args.config}")

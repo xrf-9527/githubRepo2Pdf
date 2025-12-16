@@ -17,6 +17,7 @@ repo-pdfs/
 
 .DS_Store
 debug.md
+debug.tex
 
 # 测试相关
 .coverage

@@ -207,7 +207,7 @@ variables:
 % ============================================================================
 % Code block settings
 % ============================================================================
-\\RecustomVerbatimEnvironment{{verbatim}}{{Verbatim}}{{breaklines,commandchars=\\\\\\{{\\}}}}
+\\RecustomVerbatimEnvironment{{verbatim}}{{Verbatim}}{{breaklines}}
 \\DefineVerbatimEnvironment{{Highlighting}}{{Verbatim}}{{breaklines,commandchars=\\\\\\{{\\}}, fontsize={code_fontsize}}}
 \\fvset{{breaklines=true, breakanywhere=true, breakafter=\\\\, fontsize={code_fontsize}}}
 

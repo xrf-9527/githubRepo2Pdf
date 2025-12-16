@@ -130,12 +130,13 @@ Optimized settings for different reading devices:
 
 Update `pdf_settings` in config.yaml if fonts missing.
 
-### Debugging Failed Conversions
+### Debugging failed conversions
 
 1. Run `make debug` for detailed logs
 2. Check `temp_conversion_files/temp.md` for generated markdown
 3. Review `temp_conversion_files/header.tex` for LaTeX issues
-4. Common fixes:
+4. Generate debug LaTeX: `pandoc temp_conversion_files/temp.md -o debug.tex --defaults temp_conversion_files/pandoc_defaults.yaml`
+5. Common fixes:
    - Missing fonts → update config.yaml
    - Special chars → already escaped in v2.0
    - Large files → auto-split enabled by default
@@ -148,6 +149,7 @@ repo-pdfs/               # Output PDFs (.gitignored)
 temp_conversion_files/   # Debug artifacts (preserved on error)
 venv/                    # Python virtualenv (.gitignored)
 templates/               # PDF structure templates
+repo_to_pdf/core/        # System utilities (cairo fix location)
 ```
 
 ## Dependencies
@@ -171,6 +173,16 @@ templates/               # PDF structure templates
 - pytest ≥7.4.0, pytest-cov ≥4.1.0, pytest-mock ≥3.11.0
 
 ## Recent Critical Fixes
+
+### Cairo Dependency & Monkeypatch (2025-12)
+
+**Problem**: `cairosvg` failed to find Homebrew-installed `cairo` on macOS, causing SVG/emoji failures.
+**Fix**: `repo_to_pdf/core/system_utils.py` monkeypatches `ctypes.util.find_library` to explicitly load `libcairo.2.dylib` from standard paths.
+
+### LaTeX Verbatim Fix (2025-12)
+
+**Problem**: `commandchars` in `Verbatim` environment caused `}` to crash compilation ("Argument of \FancyVerbGetLine has an extra }").
+**Fix**: Removed `commandchars` from `RecustomVerbatimEnvironment` in `repo_to_pdf/converters/latex_generator.py`.
 
 ### LaTeX Escape & Math Mode (2025-10-18, commit c30fe9b)
 
