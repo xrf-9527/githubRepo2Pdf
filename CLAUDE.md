@@ -8,8 +8,6 @@ Project instructions for Claude Code when working with this repository.
 
 - **Version**: 2.0 (modular architecture, 21 modules, 4,762 lines)
 - **Tech Stack**: Python 3.10+, Pandoc, XeLaTeX, Pydantic
-- **Python Requirements**: 3.10+ (uses PEP 585 annotations, Path.is_relative_to())
-- **Tested Versions**: Python 3.10, 3.11, 3.12, 3.13 on Ubuntu & macOS
 - **Entry Point**: `repo_to_pdf/cli.py`
 - **Main Class**: `RepoPDFConverter` in `repo_to_pdf/converter.py`
 
@@ -156,24 +154,13 @@ repo_to_pdf/core/        # System utilities (cairo fix location)
 
 ## Dependencies
 
-### Python Version Requirements
+### Python
 
-**Minimum**: Python 3.10+
+**Requires**: Python 3.10+ (Python 3.8/3.9 dropped in Dec 2025)
 
-**Why Python 3.10?**
-- PEP 585 type annotations (`dict[str, str]` instead of `Dict[str, str]`)
-- `Path.is_relative_to()` method (no workarounds needed)
-- Structural pattern matching (match/case statements)
-- Better error messages with precise line numbers
-- Performance improvements (~10-15% faster than Python 3.8)
-- Official support until October 2026
+Uses: PEP 585 annotations, `Path.is_relative_to()`, match/case
 
-**Migration from older Python:**
-- Ubuntu 22.04+: `sudo apt install python3.10`
-- macOS: `brew install python@3.10`
-- Windows: Download from [python.org](https://python.org)
-
-**Note**: Python 3.8 and 3.9 are no longer supported as of December 2025 (Python 3.8 EOL: October 2024).
+Tested: 3.10, 3.11, 3.12, 3.13 on Ubuntu & macOS
 
 ### System (auto-installed via Makefile)
 
@@ -195,28 +182,11 @@ repo_to_pdf/core/        # System utilities (cairo fix location)
 
 ## Recent Critical Fixes
 
-### Python Version Upgrade to 3.10+ (2025-12-16)
+### Python 3.10+ Upgrade (2025-12-16)
 
-**BREAKING CHANGE**: Dropped support for Python 3.8 and 3.9
+**BREAKING**: Dropped Python 3.8/3.9 support (3.8 EOL Oct 2024)
 
-**Rationale**:
-- Python 3.8 reached EOL in October 2024 (no security updates)
-- Python 3.9 EOL in October 2025 (limited support remaining)
-- Supporting old versions prevented using modern Python features
-- Required maintenance of compatibility workarounds
-
-**Benefits**:
-- ✅ Cleaner code with PEP 585 type annotations
-- ✅ Native `Path.is_relative_to()` method (removed workarounds)
-- ✅ Access to structural pattern matching (match/case)
-- ✅ Better performance and error messages
-- ✅ Reduced maintenance burden
-
-**CI/CD Changes**:
-- Now tests Python 3.10, 3.11, 3.12, 3.13 on Ubuntu & macOS
-- All tests passing across 8 job configurations
-
-**Commits**: 9f6891c, a3da972, 039e3ff, a182feb
+Removed compatibility workarounds, now uses PEP 585 annotations & native `Path.is_relative_to()`. CI tests 3.10-3.13 on Ubuntu/macOS.
 
 ### Cairo Dependency & Monkeypatch (2025-12)
 
