@@ -5,7 +5,7 @@ import os
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from tqdm import tqdm
 
@@ -197,7 +197,7 @@ class RepoPDFConverter:
 
         return temp_md
 
-    def _collect_files(self) -> List[Path]:
+    def _collect_files(self) -> list[Path]:
         """
         Collect all files to process from repository.
 

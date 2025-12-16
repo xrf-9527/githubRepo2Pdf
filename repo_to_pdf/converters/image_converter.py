@@ -4,7 +4,7 @@ import hashlib
 import logging
 import subprocess
 from pathlib import Path
-from typing import Dict, Optional, Tuple
+from typing import Optional, Tuple
 from xml.etree import ElementTree as ET
 
 import requests
@@ -35,7 +35,7 @@ class ImageConverter:
         """
         self.cache_dir = cache_dir
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        self._conversion_cache: Dict[str, str] = {}
+        self._conversion_cache: dict[str, str] = {}
 
     def convert_svg_to_png(
         self, svg_content: str, output_path: Path, use_inkscape_fallback: bool = True
@@ -409,7 +409,7 @@ class ImageConverter:
         """Clear the conversion cache."""
         self._conversion_cache.clear()
 
-    def get_cache_stats(self) -> Dict[str, int]:
+    def get_cache_stats(self) -> dict[str, int]:
         """Get statistics about the conversion cache."""
         return {
             "cached_conversions": len(self._conversion_cache),

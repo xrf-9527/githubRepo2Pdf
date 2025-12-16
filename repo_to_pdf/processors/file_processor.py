@@ -134,13 +134,8 @@ class FileProcessor:
             base_resolved = base_dir.resolve()
             target_resolved = target_path.resolve()
 
-            # Check if target is relative to base (Python 3.8 compatible)
-            # Try to compute the relative path - if it fails, paths are not related
-            try:
-                target_resolved.relative_to(base_resolved)
-                return True
-            except ValueError:
-                return False
+            # Check if target is relative to base
+            return target_resolved.is_relative_to(base_resolved)
         except (ValueError, OSError) as e:
             logger.warning(f"Path validation failed for {target_path}: {e}")
             return False
