@@ -93,9 +93,7 @@ class RepoPDFConverter:
             logger.info(f"Generated Markdown: {temp_md}")
 
             # Step 3: Generate LaTeX configuration
-            pandoc_config = self.latex_generator.generate_pandoc_config(
-                self.repo_path.name
-            )
+            pandoc_config = self.latex_generator.generate_pandoc_config(self.repo_path.name)
             logger.info(f"Generated Pandoc config: {pandoc_config}")
 
             # Step 4: Generate PDF using Pandoc
@@ -106,7 +104,7 @@ class RepoPDFConverter:
 
         except Exception as e:
             logger.error(f"Conversion failed: {e}")
-            raise ConversionError(f"Failed to convert repository to PDF", details=str(e))
+            raise ConversionError("Failed to convert repository to PDF", details=str(e))
 
     def _clone_or_update_repository(self) -> Path:
         """
@@ -181,6 +179,7 @@ class RepoPDFConverter:
         # Final scrub: remove any remaining remote images to prevent Pandoc fetching
         try:
             import re
+
             content = temp_md.read_text(encoding="utf-8")
             # Remove Markdown inline remote images
             content = re.sub(
@@ -412,9 +411,7 @@ class RepoPDFConverter:
 
             if result.returncode != 0:
                 logger.error(f"Pandoc stderr: {result.stderr}")
-                raise ConversionError(
-                    "Pandoc conversion failed", details=result.stderr
-                )
+                raise ConversionError("Pandoc conversion failed", details=result.stderr)
 
             if not output_pdf.exists():
                 raise ConversionError("PDF file was not generated")
@@ -424,7 +421,7 @@ class RepoPDFConverter:
         except subprocess.TimeoutExpired:
             raise ConversionError("Pandoc conversion timed out (>10 minutes)")
         except Exception as e:
-            raise ConversionError(f"Failed to run Pandoc", details=str(e))
+            raise ConversionError("Failed to run Pandoc", details=str(e))
 
     def cleanup(self):
         """Clean up temporary files."""

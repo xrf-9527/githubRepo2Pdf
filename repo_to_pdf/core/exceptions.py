@@ -53,6 +53,7 @@ class ConfigurationError(RepoPDFError):
         ...     "fontsize must be one of: 7pt, 8pt, 9pt, 10pt, 11pt, 12pt"
         ... )
     """
+
     pass
 
 
@@ -73,6 +74,7 @@ class GitOperationError(RepoPDFError):
         ...     "Repository not found: https://github.com/user/repo.git"
         ... )
     """
+
     pass
 
 
@@ -92,6 +94,7 @@ class ConversionError(RepoPDFError):
         ...     "LaTeX Error: Undefined control sequence"
         ... )
     """
+
     pass
 
 
@@ -111,6 +114,7 @@ class ImageProcessingError(RepoPDFError):
         ...     "Invalid SVG content: missing width and height"
         ... )
     """
+
     pass
 
 
@@ -130,6 +134,7 @@ class FileProcessingError(RepoPDFError):
         ...     "Permission denied: /path/to/file"
         ... )
     """
+
     pass
 
 
@@ -148,6 +153,7 @@ class EmojiProcessingError(RepoPDFError):
         ...     "Twemoji CDN unavailable for sequence: 1f600"
         ... )
     """
+
     pass
 
 
@@ -166,6 +172,7 @@ class TemplateError(RepoPDFError):
         ...     "No template file: templates/custom.yaml"
         ... )
     """
+
     pass
 
 
@@ -185,4 +192,5 @@ class ValidationError(RepoPDFError):
         ...     "Path traversal detected: ../../etc/passwd"
         ... )
     """
+
     pass

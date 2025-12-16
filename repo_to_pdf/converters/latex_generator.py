@@ -3,7 +3,7 @@
 import logging
 import platform
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from repo_to_pdf.core.config import AppConfig
 
@@ -70,10 +70,6 @@ class LaTeXGenerator:
         mono_font = self.config.pdf_settings.mono_font or system_fonts["mono_font"]
 
         # Get PDF settings
-        code_fontsize = self.config.pdf_settings.code_fontsize
-        fontsize = self.config.pdf_settings.fontsize
-        linespread = self.config.pdf_settings.linespread
-        parskip = self.config.pdf_settings.parskip
         margin = self.config.pdf_settings.margin
         highlight_style = self.config.pdf_settings.highlight_style
 
@@ -304,9 +300,7 @@ variables:
 
         return emoji_candidates
 
-    def _generate_emoji_fallback_setup(
-        self, emoji_candidates: List[str], mono_font: str
-    ) -> str:
+    def _generate_emoji_fallback_setup(self, emoji_candidates: List[str], mono_font: str) -> str:
         """
         Generate LaTeX code for emoji font fallback.
 

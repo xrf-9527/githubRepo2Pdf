@@ -3,7 +3,7 @@
 import logging
 import re
 from pathlib import Path
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional
 
 from bs4 import BeautifulSoup
 
@@ -57,9 +57,7 @@ class MarkdownProcessor:
 
         # 2. Process reference-style links
         reference_links = self._extract_reference_links(content)
-        content = self._process_reference_images(
-            content, reference_links, source_file, repo_root
-        )
+        content = self._process_reference_images(content, reference_links, source_file, repo_root)
 
         # 3. Process inline images
         content = self._process_inline_images(content, source_file, repo_root)
@@ -86,7 +84,7 @@ class MarkdownProcessor:
 
     def _remove_code_block_titles(self, content: str) -> str:
         """Remove title attributes from code blocks."""
-        return re.sub(r'```(\w+)\s+title="([^"]+)"', r'```\1', content)
+        return re.sub(r'```(\w+)\s+title="([^"]+)"', r"```\1", content)
 
     def _extract_reference_links(self, content: str) -> Dict[str, Dict[str, Optional[str]]]:
         """
@@ -100,9 +98,7 @@ class MarkdownProcessor:
         """
         reference_links = {}
 
-        for match in re.finditer(
-            r'^\[(.*?)\]:\s*(\S+)(?:\s+"(.*?)")?$', content, re.MULTILINE
-        ):
+        for match in re.finditer(r'^\[(.*?)\]:\s*(\S+)(?:\s+"(.*?)")?$', content, re.MULTILINE):
             ref_id, url, title = match.groups()
             reference_links[ref_id] = {"url": url, "title": title}
 
@@ -159,7 +155,7 @@ class MarkdownProcessor:
                 return f'![{alt}]({url} "{title}")'
             return f"![{alt}]({url})"
 
-        return re.sub(r'!\[(.*?)\]\[(.*?)\]', process_ref_image, content)
+        return re.sub(r"!\[(.*?)\]\[(.*?)\]", process_ref_image, content)
 
     def _process_inline_images(
         self, content: str, source_file: Optional[Path], repo_root: Optional[Path]
@@ -214,7 +210,7 @@ class MarkdownProcessor:
         # Process with title
         content = re.sub(r'!\[(.*?)\]\((.*?)\s+"(.*?)"\)', process_md_image, content)
         # Process without title
-        content = re.sub(r'!\[(.*?)\]\((.*?)\)', process_md_image, content)
+        content = re.sub(r"!\[(.*?)\]\((.*?)\)", process_md_image, content)
 
         return content
 
@@ -314,9 +310,7 @@ class MarkdownProcessor:
             normalized = f"images/{resolved.name}"
             return f"![{alt}]({normalized})"
 
-        return re.sub(
-            r"<img\s+[^>]+>", process_html_image, content, flags=re.IGNORECASE
-        )
+        return re.sub(r"<img\s+[^>]+>", process_html_image, content, flags=re.IGNORECASE)
 
     def _remove_residual_remote_images(self, content: str) -> str:
         """
@@ -328,7 +322,9 @@ class MarkdownProcessor:
         # Remove Markdown inline remote images: ![alt](http...)
         content = re.sub(r"!\[[^\]]*\]\((https?://[^\s)]+)(\s+\"[^\"]*\")?\)", "", content)
         # Remove HTML remote images: <img src="http...">
-        content = re.sub(r"<img[^>]+src=\"https?://[^\"]+\"[^>]*>", "", content, flags=re.IGNORECASE)
+        content = re.sub(
+            r"<img[^>]+src=\"https?://[^\"]+\"[^>]*>", "", content, flags=re.IGNORECASE
+        )
         return content
 
     def _process_inline_svg(self, content: str) -> str:

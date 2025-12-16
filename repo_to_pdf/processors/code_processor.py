@@ -2,15 +2,14 @@
 
 import logging
 import re
-from pathlib import Path
 from typing import List, Tuple
 
 from repo_to_pdf.converters.emoji_handler import EmojiHandler
 from repo_to_pdf.core.config import AppConfig
 from repo_to_pdf.core.constants import (
-    MAX_LINES_BEFORE_SPLIT,
     CHUNK_SIZE_LINES,
     MAX_LINE_LENGTH_DEFAULT,
+    MAX_LINES_BEFORE_SPLIT,
 )
 
 logger = logging.getLogger(__name__)
@@ -66,9 +65,7 @@ class CodeProcessor:
         )
         self.code_block_strategy = config.pdf_settings.code_block_strategy
 
-    def process_code_file(
-        self, content: str, file_extension: str, relative_path: str
-    ) -> str:
+    def process_code_file(self, content: str, file_extension: str, relative_path: str) -> str:
         """
         Process code file content for PDF conversion.
 
@@ -92,14 +89,10 @@ class CodeProcessor:
         code_body = content
 
         if self.render_header_comments_outside:
-            header_text, code_body = self.extract_header_comment(
-                code_body, file_extension
-            )
+            header_text, code_body = self.extract_header_comment(code_body, file_extension)
             if header_text:
                 # Replace emoji in header (use normal LaTeX syntax)
-                header_text = self.emoji_handler.replace_emoji_in_text(
-                    header_text, in_code=False
-                )
+                header_text = self.emoji_handler.replace_emoji_in_text(header_text, in_code=False)
                 header_md = header_text.strip() + "\n\n"
 
         # 2. Process long lines
@@ -129,8 +122,7 @@ class CodeProcessor:
             else:
                 # Truncate
                 code_transformed = (
-                    "\n".join(lines[:MAX_LINES_BEFORE_SPLIT])
-                    + "\n\n... (文件太大，已截断)"
+                    "\n".join(lines[:MAX_LINES_BEFORE_SPLIT]) + "\n\n... (文件太大，已截断)"
                 )
 
         # 7. Format output
@@ -138,9 +130,7 @@ class CodeProcessor:
             relative_path, header_md, code_transformed, lang, contains_emoji
         )
 
-    def extract_header_comment(
-        self, content: str, file_extension: str
-    ) -> Tuple[str, str]:
+    def extract_header_comment(self, content: str, file_extension: str) -> Tuple[str, str]:
         """
         Extract header comment block from code file.
 
@@ -253,9 +243,7 @@ class CodeProcessor:
 
         return header_text, remaining
 
-    def process_long_lines(
-        self, content: str, max_length: int = MAX_LINE_LENGTH_DEFAULT
-    ) -> str:
+    def process_long_lines(self, content: str, max_length: int = MAX_LINE_LENGTH_DEFAULT) -> str:
         """
         Process long lines by breaking them intelligently.
 
@@ -313,7 +301,7 @@ class CodeProcessor:
 
             if len(parts) > 1:
                 quote = match.group(0)[0]  # Get original quote
-                return f'{quote}\\\n{indent}'.join(parts) + quote
+                return f"{quote}\\\n{indent}".join(parts) + quote
 
             return match.group(0)
 
@@ -327,9 +315,7 @@ class CodeProcessor:
         lines = []
         for ln in content.splitlines():
             if len(ln) > hard_wrap_threshold:
-                wrapped = "\n".join(
-                    ln[i : i + wrap_width] for i in range(0, len(ln), wrap_width)
-                )
+                wrapped = "\n".join(ln[i : i + wrap_width] for i in range(0, len(ln), wrap_width))
                 lines.append(wrapped)
             else:
                 lines.append(ln)
@@ -353,9 +339,7 @@ class CodeProcessor:
         num_parts = (total_lines + CHUNK_SIZE_LINES - 1) // CHUNK_SIZE_LINES
 
         # Add file note
-        result.append(
-            f"\n> 注意：此文件包含 {total_lines} 行，已分为 {num_parts} 个部分显示\n"
-        )
+        result.append(f"\n> 注意：此文件包含 {total_lines} 行，已分为 {num_parts} 个部分显示\n")
 
         # Split into parts
         for i in range(num_parts):
@@ -364,9 +348,7 @@ class CodeProcessor:
             part_content = "\n".join(lines[start:end])
 
             # Add part header
-            result.append(
-                f"\n## {relative_path} - 第 {i+1}/{num_parts} 部分 (行 {start+1}-{end})"
-            )
+            result.append(f"\n## {relative_path} - 第 {i+1}/{num_parts} 部分 (行 {start+1}-{end})")
 
             # Format part
             if "§emojiimg" in part_content:

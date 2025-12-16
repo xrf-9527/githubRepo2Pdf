@@ -56,9 +56,7 @@ class RepositoryConfig(BaseModel):
         # Check for valid URL schemes
         valid_schemes = ["http://", "https://", "git@", "ssh://"]
         if not any(v.startswith(scheme) for scheme in valid_schemes):
-            raise ValueError(
-                f"Repository URL must start with one of: {', '.join(valid_schemes)}"
-            )
+            raise ValueError(f"Repository URL must start with one of: {', '.join(valid_schemes)}")
 
         return v
 
@@ -97,82 +95,57 @@ class PDFSettings(BaseModel):
     main_font: str = Field(..., description="Main document font")
     mono_font: str = Field(..., description="Monospace font for code")
     emoji_font: Optional[Union[str, List[str]]] = Field(
-        default=None,
-        description="Emoji font or list of fallback fonts"
+        default=None, description="Emoji font or list of fallback fonts"
     )
     fontsize: str = Field(default=DEFAULT_FONTSIZE, description="Document font size")
-    code_fontsize: str = Field(
-        default=DEFAULT_CODE_FONTSIZE,
-        description="Code block font size"
-    )
+    code_fontsize: str = Field(default=DEFAULT_CODE_FONTSIZE, description="Code block font size")
     linespread: str = Field(default=DEFAULT_LINESPREAD, description="Line spacing")
     parskip: str = Field(default=DEFAULT_PARSKIP, description="Paragraph spacing")
     highlight_style: str = Field(
-        default=PANDOC_HIGHLIGHT_STYLE,
-        description="Syntax highlighting style"
+        default=PANDOC_HIGHLIGHT_STYLE, description="Syntax highlighting style"
     )
     split_large_files: bool = Field(
-        default=True,
-        description="Split large files into multiple parts"
+        default=True, description="Split large files into multiple parts"
     )
     render_header_comments_outside_code: bool = Field(
-        default=True,
-        description="Render header comments as text (not code)"
+        default=True, description="Render header comments as text (not code)"
     )
     code_block_strategy: str = Field(
-        default="normal",
-        description="Code block strategy: normal or codeblock_for_emoji"
+        default="normal", description="Code block strategy: normal or codeblock_for_emoji"
     )
-    emoji_download: bool = Field(
-        default=True,
-        description="Allow downloading emoji from CDN"
-    )
+    emoji_download: bool = Field(default=True, description="Allow downloading emoji from CDN")
     max_line_length: int = Field(
-        default=200,
-        ge=40,
-        le=500,
-        description="Maximum line length before hard wrapping"
+        default=200, ge=40, le=500, description="Maximum line length before hard wrapping"
     )
 
     # Code block visual enhancement settings
     code_block_bg: str = Field(
         default="gray!5",
-        description="Code block background color (LaTeX color spec, e.g., 'gray!5', 'blue!3')"
+        description="Code block background color (LaTeX color spec, e.g., 'gray!5', 'blue!3')",
     )
     code_block_border: str = Field(
         default="gray!30",
-        description="Code block border color (LaTeX color spec, e.g., 'gray!30', 'blue!20')"
+        description="Code block border color (LaTeX color spec, e.g., 'gray!30', 'blue!20')",
     )
     code_block_padding: str = Field(
-        default="5pt",
-        description="Code block padding (LaTeX dimension, e.g., '5pt', '3mm')"
+        default="5pt", description="Code block padding (LaTeX dimension, e.g., '5pt', '3mm')"
     )
 
-    include_tree: bool = Field(
-        default=True,
-        description="Include directory tree in output"
-    )
-    include_stats: bool = Field(
-        default=True,
-        description="Include code statistics in output"
-    )
+    include_tree: bool = Field(default=True, description="Include directory tree in output")
+    include_stats: bool = Field(default=True, description="Include code statistics in output")
     tree_max_depth: int = Field(
-        default=3,
-        ge=1,
-        le=10,
-        description="Maximum depth for directory tree"
+        default=3, ge=1, le=10, description="Maximum depth for directory tree"
     )
     sans_font: Optional[str] = Field(
-        default=None,
-        description="Sans-serif font (auto-detected if not set)"
+        default=None, description="Sans-serif font (auto-detected if not set)"
     )
     metadata: Dict[str, str] = Field(
         default_factory=lambda: {
             "author": "Repo-to-PDF Generator",
             "creator": "LaTeX",
-            "producer": "XeLaTeX"
+            "producer": "XeLaTeX",
         },
-        description="PDF metadata"
+        description="PDF metadata",
     )
 
     @field_validator("fontsize")
@@ -180,9 +153,7 @@ class PDFSettings(BaseModel):
     def validate_fontsize(cls, v: str) -> str:
         """Validate font size."""
         if v not in VALID_FONTSIZES:
-            raise ValueError(
-                f"fontsize must be one of: {', '.join(sorted(VALID_FONTSIZES))}"
-            )
+            raise ValueError(f"fontsize must be one of: {', '.join(sorted(VALID_FONTSIZES))}")
         return v
 
     @field_validator("code_fontsize")
@@ -208,9 +179,7 @@ class PDFSettings(BaseModel):
         """Validate code block strategy."""
         valid_strategies = ["normal", "codeblock_for_emoji"]
         if v not in valid_strategies:
-            raise ValueError(
-                f"code_block_strategy must be one of: {', '.join(valid_strategies)}"
-            )
+            raise ValueError(f"code_block_strategy must be one of: {', '.join(valid_strategies)}")
         return v
 
 
@@ -227,8 +196,7 @@ class DevicePreset(BaseModel):
     description: str = Field(..., description="Preset description")
     template: str = Field(default="default", description="Template name")
     pdf_overrides: Dict[str, Any] = Field(
-        default_factory=dict,
-        description="PDF settings overrides"
+        default_factory=dict, description="PDF settings overrides"
     )
 
 
@@ -251,26 +219,15 @@ class AppConfig(BaseModel):
     """
 
     repository: RepositoryConfig = Field(..., description="Repository configuration")
-    workspace_dir: str = Field(
-        default="./repo-workspace",
-        description="Workspace directory"
-    )
-    output_dir: str = Field(
-        default="./repo-pdfs",
-        description="Output directory"
-    )
+    workspace_dir: str = Field(default="./repo-workspace", description="Workspace directory")
+    output_dir: str = Field(default="./repo-pdfs", description="Output directory")
     pdf_settings: PDFSettings = Field(..., description="PDF settings")
     ignores: List[str] = Field(
-        default_factory=lambda: list(DEFAULT_IGNORE_PATTERNS),
-        description="Ignore patterns"
+        default_factory=lambda: list(DEFAULT_IGNORE_PATTERNS), description="Ignore patterns"
     )
-    device_preset: str = Field(
-        default="desktop",
-        description="Active device preset"
-    )
+    device_preset: str = Field(default="desktop", description="Active device preset")
     device_presets: Dict[str, DevicePreset] = Field(
-        default_factory=dict,
-        description="Device presets"
+        default_factory=dict, description="Device presets"
     )
 
     # Internal fields
@@ -297,23 +254,15 @@ class AppConfig(BaseModel):
         config_path = Path(config_path)
 
         if not config_path.exists():
-            raise ConfigurationError(
-                f"Configuration file not found: {config_path}"
-            )
+            raise ConfigurationError(f"Configuration file not found: {config_path}")
 
         try:
-            with open(config_path, 'r', encoding='utf-8') as f:
+            with open(config_path, "r", encoding="utf-8") as f:
                 data = yaml.safe_load(f)
         except yaml.YAMLError as e:
-            raise ConfigurationError(
-                "Invalid YAML syntax in configuration file",
-                str(e)
-            )
+            raise ConfigurationError("Invalid YAML syntax in configuration file", str(e))
         except Exception as e:
-            raise ConfigurationError(
-                f"Failed to read configuration file: {config_path}",
-                str(e)
-            )
+            raise ConfigurationError(f"Failed to read configuration file: {config_path}", str(e))
 
         if not data:
             raise ConfigurationError("Configuration file is empty")
@@ -327,19 +276,16 @@ class AppConfig(BaseModel):
             config._project_root = project_root
             return config
         except Exception as e:
-            raise ConfigurationError(
-                "Invalid configuration",
-                str(e)
-            )
+            raise ConfigurationError("Invalid configuration", str(e))
 
-    @model_validator(mode='after')
-    def apply_device_preset(self) -> 'AppConfig':
+    @model_validator(mode="after")
+    def apply_device_preset(self) -> "AppConfig":
         """Apply device preset if specified and not already applied."""
         if self._applied_preset:
             return self
 
         # Get device preset from environment or config
-        preset_name = os.environ.get('DEVICE') or self.device_preset
+        preset_name = os.environ.get("DEVICE") or self.device_preset
 
         # Merge built-in presets with user-defined presets
         all_presets = {**DEVICE_PRESETS, **self.device_presets}
@@ -399,18 +345,16 @@ class AppConfig(BaseModel):
         output_path = Path(output_path)
 
         # Convert to dict
-        data = self.model_dump(exclude={'_project_root', '_applied_preset'})
+        data = self.model_dump(exclude={"_project_root", "_applied_preset"})
 
         try:
-            with open(output_path, 'w', encoding='utf-8') as f:
+            with open(output_path, "w", encoding="utf-8") as f:
                 yaml.dump(data, f, default_flow_style=False, allow_unicode=True)
         except Exception as e:
-            raise ConfigurationError(
-                f"Failed to write configuration to {output_path}",
-                str(e)
-            )
+            raise ConfigurationError(f"Failed to write configuration to {output_path}", str(e))
 
     class Config:
         """Pydantic configuration."""
+
         arbitrary_types_allowed = True
         validate_assignment = True

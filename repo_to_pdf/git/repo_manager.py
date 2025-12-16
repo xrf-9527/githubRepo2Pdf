@@ -49,12 +49,7 @@ class GitRepoManager:
         # Automatic cleanup on exit
     """
 
-    def __init__(
-        self,
-        repo_url: str,
-        branch: str = 'main',
-        cleanup_on_exit: bool = False
-    ):
+    def __init__(self, repo_url: str, branch: str = "main", cleanup_on_exit: bool = False):
         """
         Initialize Git repository manager.
 
@@ -73,15 +68,15 @@ class GitRepoManager:
         self._repo_name = self._extract_repo_name(repo_url)
 
         # Set Git environment variables for better performance
-        if os.uname().sysname == 'Darwin':  # macOS
-            os.environ['GIT_PYTHON_GIT_EXECUTABLE'] = '/usr/bin/git'
-            os.environ['GIT_PYTHON_REFRESH'] = 'quiet'
+        if os.uname().sysname == "Darwin":  # macOS
+            os.environ["GIT_PYTHON_GIT_EXECUTABLE"] = "/usr/bin/git"
+            os.environ["GIT_PYTHON_REFRESH"] = "quiet"
 
         # Suppress Git module logging
-        logging.getLogger('git').setLevel(logging.WARNING)
-        logging.getLogger('git.cmd').setLevel(logging.WARNING)
+        logging.getLogger("git").setLevel(logging.WARNING)
+        logging.getLogger("git.cmd").setLevel(logging.WARNING)
 
-    def __enter__(self) -> 'GitRepoManager':
+    def __enter__(self) -> "GitRepoManager":
         """Context manager entry."""
         return self
 
@@ -112,40 +107,33 @@ class GitRepoManager:
         try:
             # Parse HTTP(S) URLs
             parsed = urlparse(url)
-            if parsed.scheme in ['http', 'https']:
-                path_parts = parsed.path.strip('/').split('/')
+            if parsed.scheme in ["http", "https"]:
+                path_parts = parsed.path.strip("/").split("/")
                 if len(path_parts) >= 2:
-                    return path_parts[-1].replace('.git', '')
+                    return path_parts[-1].replace(".git", "")
                 raise GitOperationError(
-                    "Invalid repository URL",
-                    f"Could not extract repository name from: {url}"
+                    "Invalid repository URL", f"Could not extract repository name from: {url}"
                 )
 
             # Handle SSH URLs (git@host:user/repo.git)
-            if '@' in url and ':' in url:
-                repo_part = url.split(':')[-1]
-                return repo_part.split('/')[-1].replace('.git', '')
+            if "@" in url and ":" in url:
+                repo_part = url.split(":")[-1]
+                return repo_part.split("/")[-1].replace(".git", "")
 
             # Handle ssh:// URLs
-            if parsed.scheme == 'ssh':
-                path_parts = parsed.path.strip('/').split('/')
+            if parsed.scheme == "ssh":
+                path_parts = parsed.path.strip("/").split("/")
                 if path_parts:
-                    return path_parts[-1].replace('.git', '')
+                    return path_parts[-1].replace(".git", "")
 
             # Fallback: try to extract from last part
-            return url.split('/')[-1].replace('.git', '') or 'repository'
+            return url.split("/")[-1].replace(".git", "") or "repository"
 
         except Exception as e:
-            raise GitOperationError(
-                "Failed to parse repository URL",
-                f"URL: {url}, Error: {e}"
-            )
+            raise GitOperationError("Failed to parse repository URL", f"URL: {url}, Error: {e}")
 
     def clone_or_pull(
-        self,
-        workspace_dir: Path,
-        depth: int = 1,
-        single_branch: bool = True
+        self, workspace_dir: Path, depth: int = 1, single_branch: bool = True
     ) -> Path:
         """
         Clone repository or pull latest changes if it exists.
@@ -184,27 +172,18 @@ class GitRepoManager:
             else:
                 # Clone repository
                 return self._clone_repository(
-                    self.repo_dir,
-                    depth=depth,
-                    single_branch=single_branch
+                    self.repo_dir, depth=depth, single_branch=single_branch
                 )
 
         except git.GitCommandError as e:
             raise GitOperationError(
-                "Git operation failed",
-                f"Command: {e.command}, Output: {e.stderr}"
+                "Git operation failed", f"Command: {e.command}, Output: {e.stderr}"
             )
         except Exception as e:
-            raise GitOperationError(
-                "Unexpected error during Git operation",
-                str(e)
-            )
+            raise GitOperationError("Unexpected error during Git operation", str(e))
 
     def _clone_repository(
-        self,
-        target_dir: Path,
-        depth: int = 1,
-        single_branch: bool = True
+        self, target_dir: Path, depth: int = 1, single_branch: bool = True
     ) -> Path:
         """
         Clone repository with optimized settings.
@@ -228,7 +207,7 @@ class GitRepoManager:
                 depth=depth,
                 single_branch=single_branch,
                 # Use blob filter for faster clones
-                filter='blob:none' if depth == 1 else None
+                filter="blob:none" if depth == 1 else None,
             )
 
             logger.info(f"Successfully cloned repository to: {target_dir}")
@@ -241,7 +220,7 @@ class GitRepoManager:
 
             raise GitOperationError(
                 f"Failed to clone repository: {self.repo_url}",
-                f"Branch: {self.branch}, Error: {e.stderr}"
+                f"Branch: {self.branch}, Error: {e.stderr}",
             )
 
     def _pull_latest(self, repo_dir: Path) -> Path:
@@ -261,7 +240,7 @@ class GitRepoManager:
 
             # Ensure remote exists
             if not repo.remotes:
-                repo.create_remote('origin', self.repo_url)
+                repo.create_remote("origin", self.repo_url)
 
             origin = repo.remotes.origin
 
@@ -269,7 +248,7 @@ class GitRepoManager:
             origin.fetch()
 
             # Reset to remote branch
-            repo.git.reset('--hard', f'origin/{self.branch}')
+            repo.git.reset("--hard", f"origin/{self.branch}")
 
             logger.info(f"Successfully updated repository: {repo_dir}")
             return repo_dir
@@ -277,7 +256,7 @@ class GitRepoManager:
         except git.GitCommandError as e:
             raise GitOperationError(
                 f"Failed to pull latest changes: {repo_dir}",
-                f"Branch: {self.branch}, Error: {e.stderr}"
+                f"Branch: {self.branch}, Error: {e.stderr}",
             )
 
     def cleanup(self) -> None:
@@ -321,12 +300,12 @@ class GitRepoManager:
             commit = repo.head.commit
 
             return {
-                'sha': commit.hexsha,
-                'short_sha': commit.hexsha[:7],
-                'author': str(commit.author),
-                'date': commit.committed_datetime,
-                'message': commit.message.strip(),
-                'branch': self.branch,
+                "sha": commit.hexsha,
+                "short_sha": commit.hexsha[:7],
+                "author": str(commit.author),
+                "date": commit.committed_datetime,
+                "message": commit.message.strip(),
+                "branch": self.branch,
             }
         except Exception as e:
             logger.warning(f"Failed to get commit info: {e}")

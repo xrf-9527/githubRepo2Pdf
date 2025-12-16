@@ -1,29 +1,23 @@
 """Unit tests for file processor."""
 
-import pytest
 from pathlib import Path
-import tempfile
+
+import pytest
 
 from repo_to_pdf.core.config import AppConfig
-from repo_to_pdf.processors.file_processor import FileProcessor
 from repo_to_pdf.core.exceptions import FileProcessingError, ValidationError
+from repo_to_pdf.processors.file_processor import FileProcessor
 
 
 @pytest.fixture
 def sample_config():
     """Create a sample configuration for testing."""
     config_dict = {
-        'repository': {
-            'url': 'https://github.com/test/repo.git',
-            'branch': 'main'
-        },
-        'workspace_dir': './workspace',
-        'output_dir': './output',
-        'pdf_settings': {
-            'main_font': 'Arial',
-            'mono_font': 'Courier'
-        },
-        'ignores': ['node_modules', '*.pyc', '.git']
+        "repository": {"url": "https://github.com/test/repo.git", "branch": "main"},
+        "workspace_dir": "./workspace",
+        "output_dir": "./output",
+        "pdf_settings": {"main_font": "Arial", "mono_font": "Courier"},
+        "ignores": ["node_modules", "*.pyc", ".git"],
     }
     return AppConfig(**config_dict)
 
@@ -111,7 +105,7 @@ class TestFileReading:
         """Test reading file line by line."""
         test_file = tmp_path / "lines.txt"
         lines = ["Line 1\n", "Line 2\n", "Line 3\n"]
-        test_file.write_text(''.join(lines))
+        test_file.write_text("".join(lines))
 
         read_lines = list(file_processor.read_file_lines(test_file))
         assert read_lines == lines
@@ -171,7 +165,7 @@ class TestFileTypeDetection:
     def test_is_text_file_binary(self, file_processor, tmp_path):
         """Test binary file is detected."""
         test_file = tmp_path / "binary.so"
-        test_file.write_bytes(b'\x00\x01\x02\x03')
+        test_file.write_bytes(b"\x00\x01\x02\x03")
 
         assert file_processor.is_text_file(test_file) is False
 
@@ -186,7 +180,7 @@ class TestFileInfo:
 
         info = file_processor.get_file_info(test_file)
 
-        assert info['name'] == 'test.py'
-        assert info['extension'] == '.py'
-        assert info['size_bytes'] > 0
-        assert 'modified' in info
+        assert info["name"] == "test.py"
+        assert info["extension"] == ".py"
+        assert info["size_bytes"] > 0
+        assert "modified" in info

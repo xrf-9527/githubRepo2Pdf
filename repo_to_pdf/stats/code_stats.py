@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Callable, Dict, List
+from typing import Dict, List
 
 from repo_to_pdf.core.constants import CODE_EXTENSIONS
 
@@ -144,9 +144,7 @@ class CodeStatsGenerator:
         report = ["# 代码统计\n"]
         report.append(f"- 总文件数：{stats['total_files']:,}")
         report.append(f"- 总代码行数：{stats['total_lines']:,}")
-        report.append(
-            f"- 总大小：{stats['total_size'] / (1024 * 1024):.2f} MB\n"
-        )
+        report.append(f"- 总大小：{stats['total_size'] / (1024 * 1024):.2f} MB\n")
 
         # Language statistics
         if stats["by_language"]:

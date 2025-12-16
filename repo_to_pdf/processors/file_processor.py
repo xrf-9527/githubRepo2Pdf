@@ -95,7 +95,7 @@ class FileProcessor:
                 return True
 
             # Wildcard match
-            if '*' in pattern:
+            if "*" in pattern:
                 if fnmatch.fnmatch(path_name, pattern):
                     return True
                 if fnmatch.fnmatch(path_str, pattern):
@@ -141,10 +141,7 @@ class FileProcessor:
             return False
 
     def read_file_safe(
-        self,
-        file_path: Path,
-        encoding: str = 'utf-8',
-        max_size: Optional[int] = None
+        self, file_path: Path, encoding: str = "utf-8", max_size: Optional[int] = None
     ) -> str:
         """
         Safely read file with size limits and error handling.
@@ -167,14 +164,10 @@ class FileProcessor:
             >>> content = processor.read_file_safe(Path("src/main.py"))
         """
         if not file_path.exists():
-            raise FileProcessingError(
-                f"File not found: {file_path}"
-            )
+            raise FileProcessingError(f"File not found: {file_path}")
 
         if not file_path.is_file():
-            raise FileProcessingError(
-                f"Not a file: {file_path}"
-            )
+            raise FileProcessingError(f"Not a file: {file_path}")
 
         # Get file size
         file_size = file_path.stat().st_size
@@ -185,8 +178,7 @@ class FileProcessor:
             size_mb = file_size / (1024 * 1024)
             max_mb = max_size / (1024 * 1024)
             raise ValidationError(
-                f"File too large: {file_path}",
-                f"Size: {size_mb:.2f}MB, limit: {max_mb:.2f}MB"
+                f"File too large: {file_path}", f"Size: {size_mb:.2f}MB, limit: {max_mb:.2f}MB"
             )
 
         try:
@@ -195,30 +187,19 @@ class FileProcessor:
                 return self._read_file_streaming(file_path, encoding)
             else:
                 # For small files, read directly
-                with open(file_path, 'r', encoding=encoding) as f:
+                with open(file_path, "r", encoding=encoding) as f:
                     return f.read()
 
         except UnicodeDecodeError as e:
             raise FileProcessingError(
-                f"Failed to decode file: {file_path}",
-                f"Encoding: {encoding}, Error: {e}"
+                f"Failed to decode file: {file_path}", f"Encoding: {encoding}, Error: {e}"
             )
         except PermissionError as e:
-            raise FileProcessingError(
-                f"Permission denied: {file_path}",
-                str(e)
-            )
+            raise FileProcessingError(f"Permission denied: {file_path}", str(e))
         except Exception as e:
-            raise FileProcessingError(
-                f"Failed to read file: {file_path}",
-                str(e)
-            )
+            raise FileProcessingError(f"Failed to read file: {file_path}", str(e))
 
-    def _read_file_streaming(
-        self,
-        file_path: Path,
-        encoding: str = 'utf-8'
-    ) -> str:
+    def _read_file_streaming(self, file_path: Path, encoding: str = "utf-8") -> str:
         """
         Read file in chunks to avoid memory issues.
 
@@ -231,21 +212,14 @@ class FileProcessor:
         """
         chunks = []
         try:
-            with open(file_path, 'r', encoding=encoding) as f:
+            with open(file_path, "r", encoding=encoding) as f:
                 while chunk := f.read(STREAM_CHUNK_SIZE):
                     chunks.append(chunk)
-            return ''.join(chunks)
+            return "".join(chunks)
         except Exception as e:
-            raise FileProcessingError(
-                f"Failed to stream file: {file_path}",
-                str(e)
-            )
+            raise FileProcessingError(f"Failed to stream file: {file_path}", str(e))
 
-    def read_file_lines(
-        self,
-        file_path: Path,
-        encoding: str = 'utf-8'
-    ) -> Iterator[str]:
+    def read_file_lines(self, file_path: Path, encoding: str = "utf-8") -> Iterator[str]:
         """
         Read file line by line as generator.
 
@@ -263,20 +237,13 @@ class FileProcessor:
             ...     process_line(line)
         """
         try:
-            with open(file_path, 'r', encoding=encoding) as f:
+            with open(file_path, "r", encoding=encoding) as f:
                 for line in f:
                     yield line
         except Exception as e:
-            raise FileProcessingError(
-                f"Failed to read file lines: {file_path}",
-                str(e)
-            )
+            raise FileProcessingError(f"Failed to read file lines: {file_path}", str(e))
 
-    def collect_files(
-        self,
-        repo_path: Path,
-        include_hidden: bool = False
-    ) -> List[Path]:
+    def collect_files(self, repo_path: Path, include_hidden: bool = False) -> List[Path]:
         """
         Collect all files in repository that should be processed.
 
@@ -293,7 +260,7 @@ class FileProcessor:
         """
         collected_files = []
 
-        for file_path in sorted(repo_path.rglob('*')):
+        for file_path in sorted(repo_path.rglob("*")):
             # Skip non-files
             if not file_path.is_file():
                 continue
@@ -301,12 +268,12 @@ class FileProcessor:
             # Skip hidden files unless explicitly included
             if not include_hidden:
                 # Allow specific hidden files like .cursorrules, .gitignore
-                allowed_hidden = {'.cursorrules', '.gitignore', '.dockerignore'}
-                if file_path.name.startswith('.') and file_path.name not in allowed_hidden:
+                allowed_hidden = {".cursorrules", ".gitignore", ".dockerignore"}
+                if file_path.name.startswith(".") and file_path.name not in allowed_hidden:
                     continue
 
                 # Skip files in hidden directories
-                if any(part.startswith('.') for part in file_path.parts):
+                if any(part.startswith(".") for part in file_path.parts):
                     # Exception for allowed hidden files
                     if file_path.name not in allowed_hidden:
                         continue
@@ -351,20 +318,20 @@ class FileProcessor:
 
         # Try to read first few bytes
         try:
-            with open(file_path, 'rb') as f:
+            with open(file_path, "rb") as f:
                 chunk = f.read(512)
 
             # Check for null bytes (common in binary files)
-            if b'\x00' in chunk:
+            if b"\x00" in chunk:
                 return False
 
             # Try to decode as text
             try:
-                chunk.decode('utf-8')
+                chunk.decode("utf-8")
                 return True
             except UnicodeDecodeError:
                 # Try other encodings
-                for encoding in ['latin-1', 'gbk', 'shift-jis']:
+                for encoding in ["latin-1", "gbk", "shift-jis"]:
                     try:
                         chunk.decode(encoding)
                         return True
@@ -395,19 +362,19 @@ class FileProcessor:
         try:
             stats = file_path.stat()
             return {
-                'path': file_path,
-                'name': file_path.name,
-                'extension': file_path.suffix,
-                'size_bytes': stats.st_size,
-                'size_mb': stats.st_size / (1024 * 1024),
-                'modified': stats.st_mtime,
-                'is_text': self.is_text_file(file_path),
+                "path": file_path,
+                "name": file_path.name,
+                "extension": file_path.suffix,
+                "size_bytes": stats.st_size,
+                "size_mb": stats.st_size / (1024 * 1024),
+                "modified": stats.st_mtime,
+                "is_text": self.is_text_file(file_path),
             }
         except Exception as e:
             logger.warning(f"Could not get file info for {file_path}: {e}")
             return {
-                'path': file_path,
-                'name': file_path.name,
-                'extension': file_path.suffix,
-                'error': str(e),
+                "path": file_path,
+                "name": file_path.name,
+                "extension": file_path.suffix,
+                "error": str(e),
             }

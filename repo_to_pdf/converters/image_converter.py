@@ -3,7 +3,6 @@
 import hashlib
 import logging
 import subprocess
-from io import BytesIO
 from pathlib import Path
 from typing import Optional, Tuple
 from xml.etree import ElementTree as ET
@@ -12,12 +11,12 @@ import requests
 from bs4 import BeautifulSoup
 
 from repo_to_pdf.core.constants import (
-    IMAGE_DOWNLOAD_TIMEOUT,
-    DEFAULT_IMAGE_WIDTH,
-    DEFAULT_IMAGE_HEIGHT,
+    CAIROSVG_HEIGHT,
     CAIROSVG_SCALE,
     CAIROSVG_WIDTH,
-    CAIROSVG_HEIGHT,
+    DEFAULT_IMAGE_HEIGHT,
+    DEFAULT_IMAGE_WIDTH,
+    IMAGE_DOWNLOAD_TIMEOUT,
 )
 from repo_to_pdf.core.exceptions import ImageProcessingError
 
@@ -91,17 +90,13 @@ class ImageConverter:
 
     def _clean_svg_content(self, svg_content: str) -> str:
         """Remove XML declarations and clean SVG content."""
-        svg_content = svg_content.replace(
-            '<?xml version="1.0" encoding="UTF-8"?>', ""
-        )
+        svg_content = svg_content.replace('<?xml version="1.0" encoding="UTF-8"?>', "")
         svg_content = svg_content.replace('<?xml version="1.0"?>', "")
         return svg_content.strip()
 
     def _is_icon_definition(self, svg_content: str) -> bool:
         """Check if SVG is an icon definition file (contains <symbol> or only <defs>)."""
-        return "<symbol" in svg_content or (
-            "<defs>" in svg_content and "<use" not in svg_content
-        )
+        return "<symbol" in svg_content or ("<defs>" in svg_content and "<use" not in svg_content)
 
     def _fix_svg_dimensions(self, svg_content: str) -> str:
         """
@@ -119,10 +114,7 @@ class ImageConverter:
         try:
             tree = ET.fromstring(svg_content)
         except ET.ParseError as e:
-            raise ImageProcessingError(
-                f"Failed to parse SVG content",
-                details=str(e)
-            )
+            raise ImageProcessingError("Failed to parse SVG content", details=str(e))
 
         # Get current dimensions
         width = tree.get("width", "").strip()
@@ -186,9 +178,7 @@ class ImageConverter:
         """Ensure width and height have units (px)."""
         for dim in ["width", "height"]:
             value = tree.get(dim, "")
-            if value and not any(
-                unit in value.lower() for unit in ["px", "pt", "cm", "mm", "in"]
-            ):
+            if value and not any(unit in value.lower() for unit in ["px", "pt", "cm", "mm", "in"]):
                 tree.set(dim, f"{value}px")
                 logger.debug(f"Added px unit to {dim}: {value}px")
 
@@ -217,9 +207,7 @@ class ImageConverter:
                 str(temp_svg),
             ]
 
-            result = subprocess.run(
-                inkscape_cmd, capture_output=True, text=True, timeout=30
-            )
+            result = subprocess.run(inkscape_cmd, capture_output=True, text=True, timeout=30)
 
             # Clean up temporary file
             temp_svg.unlink(missing_ok=True)
@@ -248,9 +236,7 @@ class ImageConverter:
         try:
             soup = BeautifulSoup(content, "html.parser")
             svg = soup.find("svg")
-            return svg is not None and (
-                svg.get("width") or svg.get("height") or svg.get("viewBox")
-            )
+            return svg is not None and (svg.get("width") or svg.get("height") or svg.get("viewBox"))
         except Exception:
             return False
 
@@ -414,6 +400,7 @@ class ImageConverter:
         else:
             # Try to get extension from URL
             from urllib.parse import urlparse
+
             path = urlparse(url).path
             ext = Path(path).suffix
             return ext if ext else ".png"

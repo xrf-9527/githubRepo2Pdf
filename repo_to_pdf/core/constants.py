@@ -108,85 +108,88 @@ CAIROSVG_SCALE: float = 2.0
 # File Extensions
 # ============================================================================
 
-IMAGE_EXTENSIONS: Set[str] = {
-    '.png', '.jpg', '.jpeg', '.gif', '.ico', '.svg', '.svgz', '.webp'
-}
+IMAGE_EXTENSIONS: Set[str] = {".png", ".jpg", ".jpeg", ".gif", ".ico", ".svg", ".svgz", ".webp"}
 """Supported image file extensions"""
 
 BINARY_EXTENSIONS: Set[str] = {
-    '.pyc', '.pyo', '.pyd', '.so', '.dylib', '.dll',
-    '.class', '.o', '.obj', '.exe', '.bin'
+    ".pyc",
+    ".pyo",
+    ".pyd",
+    ".so",
+    ".dylib",
+    ".dll",
+    ".class",
+    ".o",
+    ".obj",
+    ".exe",
+    ".bin",
 }
 """Binary file extensions to ignore"""
 
 CODE_EXTENSIONS: Dict[str, str] = {
     # Frontend
-    '.js': 'javascript',
-    '.jsx': 'javascript',
-    '.ts': 'typescript',
-    '.tsx': 'typescript',
-    '.vue': 'javascript',
-    '.svelte': 'javascript',
-    '.css': 'css',
-    '.scss': 'css',
-    '.sass': 'css',
-    '.less': 'css',
-    '.html': 'html',
-    '.htm': 'html',
-    '.json': 'json',
-    '.graphql': 'graphql',
-    '.gql': 'graphql',
-
+    ".js": "javascript",
+    ".jsx": "javascript",
+    ".ts": "typescript",
+    ".tsx": "typescript",
+    ".vue": "javascript",
+    ".svelte": "javascript",
+    ".css": "css",
+    ".scss": "css",
+    ".sass": "css",
+    ".less": "css",
+    ".html": "html",
+    ".htm": "html",
+    ".json": "json",
+    ".graphql": "graphql",
+    ".gql": "graphql",
     # Backend
-    '.py': 'python',
-    '.java': 'java',
-    '.cpp': 'cpp',
-    '.cc': 'cpp',
-    '.cxx': 'cpp',
-    '.c': 'c',
-    '.h': 'c',
-    '.hpp': 'cpp',
-    '.go': 'go',
-    '.rs': 'rust',
-    '.rb': 'ruby',
-    '.php': 'php',
-    '.cs': 'csharp',
-    '.kt': 'kotlin',
-    '.swift': 'swift',
-    '.scala': 'scala',
-    '.clj': 'clojure',
-    '.ex': 'elixir',
-    '.exs': 'elixir',
-    '.erl': 'erlang',
-    '.lua': 'lua',
-    '.r': 'r',
-    '.R': 'r',
-
+    ".py": "python",
+    ".java": "java",
+    ".cpp": "cpp",
+    ".cc": "cpp",
+    ".cxx": "cpp",
+    ".c": "c",
+    ".h": "c",
+    ".hpp": "cpp",
+    ".go": "go",
+    ".rs": "rust",
+    ".rb": "ruby",
+    ".php": "php",
+    ".cs": "csharp",
+    ".kt": "kotlin",
+    ".swift": "swift",
+    ".scala": "scala",
+    ".clj": "clojure",
+    ".ex": "elixir",
+    ".exs": "elixir",
+    ".erl": "erlang",
+    ".lua": "lua",
+    ".r": "r",
+    ".R": "r",
     # Configuration and Scripts
-    '.sh': 'bash',
-    '.bash': 'bash',
-    '.zsh': 'bash',
-    '.fish': 'fish',
-    '.sql': 'sql',
-    '.yaml': 'yaml',
-    '.yml': 'yaml',
-    '.toml': 'toml',
-    '.xml': 'xml',
-    '.ini': 'ini',
-    '.conf': 'conf',
-    '.env': 'bash',
-
+    ".sh": "bash",
+    ".bash": "bash",
+    ".zsh": "bash",
+    ".fish": "fish",
+    ".sql": "sql",
+    ".yaml": "yaml",
+    ".yml": "yaml",
+    ".toml": "toml",
+    ".xml": "xml",
+    ".ini": "ini",
+    ".conf": "conf",
+    ".env": "bash",
     # Documentation
-    '.md': 'markdown',
-    '.mdx': 'mdx',
-    '.rst': 'rst',
-    '.txt': 'text',
-
+    ".md": "markdown",
+    ".mdx": "mdx",
+    ".rst": "rst",
+    ".txt": "text",
     # Other
-    '.dockerfile': 'dockerfile',
-    '.Dockerfile': 'dockerfile',
-    '.makefile': 'makefile',
-    '.Makefile': 'makefile',
+    ".dockerfile": "dockerfile",
+    ".Dockerfile": "dockerfile",
+    ".makefile": "makefile",
+    ".Makefile": "makefile",
 }
 """Mapping of file extensions to language identifiers for syntax highlighting"""
 
@@ -196,60 +199,53 @@ CODE_EXTENSIONS: Dict[str, str] = {
 
 DEFAULT_IGNORE_PATTERNS: Set[str] = {
     # Dependencies
-    'node_modules',
-    'vendor',
-    'bower_components',
-
+    "node_modules",
+    "vendor",
+    "bower_components",
     # Build outputs
-    'dist',
-    'build',
-    'out',
-    'target',
-    '.next',
-    '.nuxt',
-
+    "dist",
+    "build",
+    "out",
+    "target",
+    ".next",
+    ".nuxt",
     # Version control
-    '.git',
-    '.svn',
-    '.hg',
-
+    ".git",
+    ".svn",
+    ".hg",
     # Python
-    '__pycache__',
-    '*.pyc',
-    '*.pyo',
-    '*.pyd',
-    '.venv',
-    'venv',
-    '.tox',
-    '.eggs',
-    '*.egg-info',
-
+    "__pycache__",
+    "*.pyc",
+    "*.pyo",
+    "*.pyd",
+    ".venv",
+    "venv",
+    ".tox",
+    ".eggs",
+    "*.egg-info",
     # IDE
-    '.idea',
-    '.vscode',
-    '*.swp',
-    '*.swo',
-    '.project',
-    '.settings',
-
+    ".idea",
+    ".vscode",
+    "*.swp",
+    "*.swo",
+    ".project",
+    ".settings",
     # OS
-    '.DS_Store',
-    'Thumbs.db',
-
+    ".DS_Store",
+    "Thumbs.db",
     # Logs and temp
-    '*.log',
-    '.cache',
-    '.temp',
-    'tmp',
-
+    "*.log",
+    ".cache",
+    ".temp",
+    "tmp",
     # Lock files
-    'package-lock.json',
-    'yarn.lock',
-    'pnpm-lock.yaml',
-    'Cargo.lock',
-    'Gemfile.lock',
-    'poetry.lock',
-    'Pipfile.lock',
+    "package-lock.json",
+    "yarn.lock",
+    "pnpm-lock.yaml",
+    "Cargo.lock",
+    "Gemfile.lock",
+    "poetry.lock",
+    "Pipfile.lock",
 }
 """Default patterns for files and directories to ignore"""
 
@@ -263,21 +259,19 @@ DEFAULT_MARGIN: str = "margin=1in"
 DEFAULT_FONTSIZE: str = "10pt"
 """Default document font size"""
 
-VALID_FONTSIZES: Set[str] = {
-    '7pt', '8pt', '9pt', '10pt', '11pt', '12pt', '14pt'
-}
+VALID_FONTSIZES: Set[str] = {"7pt", "8pt", "9pt", "10pt", "11pt", "12pt", "14pt"}
 """Valid font size options"""
 
 CODE_FONTSIZE_OPTIONS: Dict[str, str] = {
-    'tiny': r'\tiny',
-    'scriptsize': r'\scriptsize',
-    'footnotesize': r'\footnotesize',
-    'small': r'\small',
-    'normalsize': r'\normalsize',
+    "tiny": r"\tiny",
+    "scriptsize": r"\scriptsize",
+    "footnotesize": r"\footnotesize",
+    "small": r"\small",
+    "normalsize": r"\normalsize",
 }
 """LaTeX code font size commands"""
 
-DEFAULT_CODE_FONTSIZE: str = r'\small'
+DEFAULT_CODE_FONTSIZE: str = r"\small"
 """Default code block font size"""
 
 DEFAULT_LINESPREAD: str = "1.0"
@@ -291,49 +285,49 @@ DEFAULT_PARSKIP: str = "6pt"
 # ============================================================================
 
 DEVICE_PRESETS: Dict[str, Dict] = {
-    'desktop': {
-        'description': '桌面端阅读优化',
-        'template': 'default',
-        'pdf_overrides': {
-            'margin': 'margin=1in',
-            'fontsize': '10pt',
-            'code_fontsize': r'\small',
-            'linespread': '1.0',
-        }
+    "desktop": {
+        "description": "桌面端阅读优化",
+        "template": "default",
+        "pdf_overrides": {
+            "margin": "margin=1in",
+            "fontsize": "10pt",
+            "code_fontsize": r"\small",
+            "linespread": "1.0",
+        },
     },
-    'kindle7': {
-        'description': '7英寸Kindle设备优化',
-        'template': 'kindle',
-        'pdf_overrides': {
-            'margin': 'margin=0.4in',
-            'fontsize': '11pt',
-            'code_fontsize': r'\small',
-            'linespread': '1.0',
-            'parskip': '5pt',
-            'max_file_size': '200KB',
-            'max_line_length': 60,
-        }
+    "kindle7": {
+        "description": "7英寸Kindle设备优化",
+        "template": "kindle",
+        "pdf_overrides": {
+            "margin": "margin=0.4in",
+            "fontsize": "11pt",
+            "code_fontsize": r"\small",
+            "linespread": "1.0",
+            "parskip": "5pt",
+            "max_file_size": "200KB",
+            "max_line_length": 60,
+        },
     },
-    'tablet': {
-        'description': '平板设备阅读优化',
-        'template': 'technical',
-        'pdf_overrides': {
-            'margin': 'margin=0.6in',
-            'fontsize': '9pt',
-            'code_fontsize': r'\small',
-            'linespread': '0.95',
-        }
+    "tablet": {
+        "description": "平板设备阅读优化",
+        "template": "technical",
+        "pdf_overrides": {
+            "margin": "margin=0.6in",
+            "fontsize": "9pt",
+            "code_fontsize": r"\small",
+            "linespread": "0.95",
+        },
     },
-    'mobile': {
-        'description': '手机端阅读优化',
-        'template': 'kindle',
-        'pdf_overrides': {
-            'margin': 'margin=0.3in',
-            'fontsize': '7pt',
-            'code_fontsize': r'\tiny',
-            'linespread': '0.85',
-            'parskip': '2pt',
-        }
+    "mobile": {
+        "description": "手机端阅读优化",
+        "template": "kindle",
+        "pdf_overrides": {
+            "margin": "margin=0.3in",
+            "fontsize": "7pt",
+            "code_fontsize": r"\tiny",
+            "linespread": "0.85",
+            "parskip": "2pt",
+        },
     },
 }
 """Device-specific preset configurations"""
@@ -345,7 +339,9 @@ DEVICE_PRESETS: Dict[str, Dict] = {
 TWEMOJI_VERSIONS: list = ["v14.0.2", "v14.0.0", "master"]
 """Twemoji CDN versions to try, in order of preference"""
 
-TWEMOJI_CDN_URL: str = "https://raw.githubusercontent.com/twitter/twemoji/{version}/assets/svg/{name}.svg"
+TWEMOJI_CDN_URL: str = (
+    "https://raw.githubusercontent.com/twitter/twemoji/{version}/assets/svg/{name}.svg"
+)
 """Twemoji CDN URL template"""
 
 EMOJI_CACHE_DIR: str = "images/emoji"

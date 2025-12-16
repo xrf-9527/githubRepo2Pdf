@@ -8,7 +8,6 @@ from typing import Dict, List, Optional
 import requests
 
 from repo_to_pdf.core.constants import EMOJI_DOWNLOAD_TIMEOUT
-from repo_to_pdf.core.exceptions import EmojiProcessingError
 
 logger = logging.getLogger(__name__)
 
@@ -278,9 +277,7 @@ class EmojiHandler:
         return {
             "cached_sequences": len(self._emoji_cache),
             "files_on_disk": len(list(self.cache_dir.glob("*.png"))),
-            "cache_size_bytes": sum(
-                f.stat().st_size for f in self.cache_dir.glob("*.png")
-            ),
+            "cache_size_bytes": sum(f.stat().st_size for f in self.cache_dir.glob("*.png")),
         }
 
     def preload_common_emojis(self) -> int:

@@ -26,6 +26,8 @@ htmlcov/
 coverage.xml
 *.egg-info/
 .tox/
+build/
+dist/
 
 # 日志文件
 *.log

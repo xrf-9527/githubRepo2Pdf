@@ -31,16 +31,14 @@ class DirectoryTreeGenerator:
         Returns:
             Markdown formatted directory tree
         """
-        tree_lines = [f"# 项目结构\n\n```"]
+        tree_lines = ["# 项目结构\n\n```"]
         tree_lines.append(f"{repo_path.name}/")
         tree_lines.extend(self._build_tree(repo_path, depth=0))
         tree_lines.append("```\n")
 
         return "\n".join(tree_lines)
 
-    def _build_tree(
-        self, current_path: Path, prefix: str = "", depth: int = 0
-    ) -> List[str]:
+    def _build_tree(self, current_path: Path, prefix: str = "", depth: int = 0) -> List[str]:
         """
         Recursively build directory tree.
 
@@ -59,9 +57,7 @@ class DirectoryTreeGenerator:
 
         try:
             # Get all entries and sort (directories first, then files)
-            entries = sorted(
-                current_path.iterdir(), key=lambda x: (not x.is_dir(), x.name.lower())
-            )
+            entries = sorted(current_path.iterdir(), key=lambda x: (not x.is_dir(), x.name.lower()))
 
             for i, entry in enumerate(entries):
                 is_last = i == len(entries) - 1
@@ -86,9 +82,7 @@ class DirectoryTreeGenerator:
                     if not self._should_ignore_dir(entry):
                         items.append(f"{prefix}{current_prefix}{entry.name}/")
                         # Recursively process subdirectories
-                        sub_items = self._build_tree(
-                            entry, prefix + extension, depth + 1
-                        )
+                        sub_items = self._build_tree(entry, prefix + extension, depth + 1)
                         items.extend(sub_items)
                 else:
                     # Check if file should be ignored

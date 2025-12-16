@@ -30,9 +30,9 @@ __version__ = "2.0.0"
 __author__ = "Repo-to-PDF Contributors"
 __license__ = "MIT"
 
+from repo_to_pdf.converter import RepoPDFConverter
 from repo_to_pdf.core.config import AppConfig
 from repo_to_pdf.core.exceptions import RepoPDFError
-from repo_to_pdf.converter import RepoPDFConverter
 
 __all__ = [
     "AppConfig",

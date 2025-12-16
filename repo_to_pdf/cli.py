@@ -31,16 +31,16 @@ def setup_logging(verbose: bool = False, quiet: bool = False) -> None:
 
     logging.basicConfig(
         level=level,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
     )
 
     # Suppress verbose output from third-party libraries
     if not verbose:
-        logging.getLogger('git').setLevel(logging.WARNING)
-        logging.getLogger('git.cmd').setLevel(logging.WARNING)
-        logging.getLogger('git.util').setLevel(logging.WARNING)
-        logging.getLogger('MARKDOWN').setLevel(logging.WARNING)
+        logging.getLogger("git").setLevel(logging.WARNING)
+        logging.getLogger("git.cmd").setLevel(logging.WARNING)
+        logging.getLogger("git.util").setLevel(logging.WARNING)
+        logging.getLogger("MARKDOWN").setLevel(logging.WARNING)
 
 
 def main() -> int:
@@ -51,7 +51,7 @@ def main() -> int:
         Exit code (0 for success, non-zero for failure)
     """
     parser = argparse.ArgumentParser(
-        description='Convert GitHub repository to PDF with syntax highlighting',
+        description="Convert GitHub repository to PDF with syntax highlighting",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -69,40 +69,28 @@ Examples:
 
 For more information, visit:
   https://github.com/yourusername/githubRepo2Pdf
-        """
+        """,
     )
 
     parser.add_argument(
-        '-c', '--config',
-        type=Path,
-        required=True,
-        help='Path to configuration YAML file'
+        "-c", "--config", type=Path, required=True, help="Path to configuration YAML file"
     )
 
     parser.add_argument(
-        '-v', '--verbose',
-        action='store_true',
-        help='Enable verbose output (DEBUG level)'
+        "-v", "--verbose", action="store_true", help="Enable verbose output (DEBUG level)"
     )
 
-    parser.add_argument(
-        '-q', '--quiet',
-        action='store_true',
-        help='Only show warnings and errors'
-    )
+    parser.add_argument("-q", "--quiet", action="store_true", help="Only show warnings and errors")
 
     parser.add_argument(
-        '-t', '--template',
+        "-t",
+        "--template",
         type=str,
         default=None,
-        help='Template name to use (e.g., default, technical, kindle)'
+        help="Template name to use (e.g., default, technical, kindle)",
     )
 
-    parser.add_argument(
-        '--version',
-        action='version',
-        version='%(prog)s 2.0.0'
-    )
+    parser.add_argument("--version", action="version", version="%(prog)s 2.0.0")
 
     args = parser.parse_args()
 
@@ -112,6 +100,7 @@ For more information, visit:
 
     # Ensure system dependencies (like Cairo on macOS) are available
     from repo_to_pdf.core.system_utils import ensure_cairo_available
+
     ensure_cairo_available()
 
     try:
@@ -142,7 +131,7 @@ For more information, visit:
 
         logger.info("")
         logger.info("=" * 60)
-        logger.info(f"✅ PDF generated successfully!")
+        logger.info("✅ PDF generated successfully!")
         logger.info(f"📄 Output: {pdf_path}")
         logger.info("=" * 60)
 
@@ -165,5 +154,5 @@ For more information, visit:
         return 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())
