@@ -32,7 +32,8 @@ jobs:
     - name: Install system dependencies (macOS)
       if: runner.os == 'macOS'
       run: |
-        brew install pandoc cairo
+        brew list pandoc &>/dev/null || brew install pandoc
+        brew list cairo &>/dev/null || brew install cairo
     
     - name: Install Python dependencies
       run: |
