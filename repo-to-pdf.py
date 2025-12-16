@@ -1801,7 +1801,7 @@ variables:
             header_lines.append("\\RecustomVerbatimEnvironment{verbatim}{Verbatim}{breaklines,breakanywhere,obeytabs,tabsize=2, fontsize=" + code_fontsize + "}")
             # 提供一个稳定的 CodeBlock 环境，避免外部包覆盖 verbatim 行为（更激进的折行与更小字号）
             # 专用 CodeBlock：使用不与代码冲突的分组符号 « »
-            header_lines.append("\\newenvironment{CodeBlock}{\\Verbatim[breaklines,breakanywhere,obeytabs,tabsize=2,commandchars=§«», fontsize=\\footnotesize]}{\\endVerbatim}")
+            header_lines.append("\\newenvironment{CodeBlock}{\\Verbatim[breaklines,breakanywhere=false,obeytabs,tabsize=2,commandchars=§«», fontsize=\\footnotesize]}{\\endVerbatim}")
             header_lines.append("\\fvset{breaklines=true, breakanywhere=true, fontsize=" + code_fontsize + ", tabsize=2}")
             header_lines.append("% Emoji 图片宏（用于代码块内插入 PNG）")
             header_lines.append("\\newcommand{\\emojiimg}[1]{\\raisebox{-0.2ex}{\\includegraphics[height=1.0em]{temp_conversion_files/images/emoji/#1}}}")

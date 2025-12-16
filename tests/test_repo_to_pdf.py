@@ -671,7 +671,7 @@ class TestEmojiAndHeader(unittest.TestCase):
             text = self.converter._replace_emoji_with_images('Hello 😀', in_code=False)
             self.assertIn('\\emojiimg{1f600.png}', text)
             code = self.converter._replace_emoji_with_images('Hello 😀', in_code=True)
-            self.assertIn('§emojiimg{1f600.png}', code)
+            self.assertIn('§emojiimg«1f600.png»', code)
 
     def test_process_file_header_rendered_outside_code(self):
         src = Path(self.test_dir) / 'demo.go'

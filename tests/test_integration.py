@@ -345,7 +345,7 @@ def 你好():
         self.assertIn("你好", result)
         self.assertIn("世界", result)
         # Emoji may be converted to inline image macro for stability
-        self.assertTrue(("🎉" in result) or ("emojiimg{" in result))
+        self.assertTrue(("🎉" in result) or ("emojiimg" in result))
 
 
 class TestConcurrency(unittest.TestCase):
