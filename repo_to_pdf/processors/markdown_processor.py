@@ -347,11 +347,14 @@ class MarkdownProcessor:
 
     def _escape_backslash_u_sequences(self, content: str) -> str:
         """
-        Escape \\UXXXXXXXX, \\uXXXX, and common escape sequences outside code blocks.
-
-        These sequences can be interpreted as LaTeX control sequences,
-        so we need to escape them to avoid errors.
-        Common escape sequences: \\n, \\t, \\r, \\a, \\b, \\f, \\v
+        Escape backslashes in code blocks.
+        
+        Since we enabled commandchars=\\\\\\{\\} in LaTeX Highlighting environment
+        (to support emojis), we must escape literal backslashes in code blocks
+        as they would otherwise be interpreted as command starts.
+        
+        Outside code blocks, we rely on Pandoc (with raw_tex disabled) to 
+        correctly escape backslashes in text.
         """
         lines = content.splitlines()
         out = []
@@ -367,22 +370,26 @@ class MarkdownProcessor:
                     fence = m.group("fence")
                     out.append(ln)
                     continue
-
-                # Escape Unicode sequences
-                ln = re.sub(r"\\U([0-9A-Fa-f]{8})", r"\\textbackslash{}U\\1", ln)
-                ln = re.sub(r"\\u([0-9A-Fa-f]{4})", r"\\textbackslash{}u\\1", ln)
-
-                # Escape common escape sequences (only if not already escaped)
-                # Match \n, \t, \r, \a, \b, \f, \v that are not preceded by another backslash
-                ln = re.sub(r"(?<!\\)\\([ntrabfv])", r"\\textbackslash{}\1", ln)
-
+                
+                # Outside code block: Do nothing (Pandoc handles escaping)
                 out.append(ln)
             else:
-                # In code block, just append
-                out.append(ln)
+                # In code block
                 if ln.startswith(fence):
-                    in_code = False
-                    fence = None
+                    try:
+                        # Check if it's really the end fence (length match or longer)
+                        # Standard markdown allows end fence to be longer
+                        if len(ln.split()[0]) >= len(fence):
+                            in_code = False
+                            fence = None
+                            out.append(ln)
+                            continue
+                    except IndexError:
+                        pass
+                
+                # Escape backslashes in code content
+                # \ -> \\
+                out.append(ln.replace("\\", "\\\\"))
 
         return "\n".join(out)
 

@@ -81,7 +81,7 @@ class LaTeXGenerator:
         # Create pandoc defaults YAML
         yaml_content = f"""# Pandoc defaults file
 pdf-engine: xelatex
-from: markdown+fenced_code_attributes+fenced_code_blocks+backtick_code_blocks+raw_tex-yaml_metadata_block-tex_math_dollars
+from: markdown+fenced_code_attributes+fenced_code_blocks+backtick_code_blocks-yaml_metadata_block-tex_math_dollars-raw_tex
 highlight-style: {highlight_style}
 
 include-in-header:

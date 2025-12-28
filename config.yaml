@@ -1,6 +1,6 @@
 # 仓库配置
 repository:
-  url: "https://github.com/anthropics/claude-cookbooks.git"
+  url: "https://github.com/anthropics/claude-code.git"
   branch: "main"
 
 # 所有路径都相对于项目根目录
