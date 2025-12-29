@@ -204,25 +204,11 @@ class RepoPDFConverter:
         Returns:
             List of file paths to process
         """
-        all_files = []
-
-        for file_path in sorted(self.repo_path.rglob("*")):
-            # Skip directories
-            if not file_path.is_file():
-                continue
-
-            # Allow special dotfiles like .cursorrules
-            if file_path.name in [".cursorrules", ".gitignore", ".env.example"]:
-                all_files.append(file_path)
-                continue
-
-            # Skip hidden files/directories
-            if any(part.startswith(".") for part in file_path.parts):
-                continue
-
-            all_files.append(file_path)
-
-        return all_files
+        return self.file_processor.collect_files(
+            self.repo_path,
+            include_hidden=False,
+            include_hidden_paths=self.config.pdf_settings.include_hidden_paths,
+        )
 
     def _process_single_file(self, file_path: Path) -> str:
         """
@@ -297,6 +283,11 @@ class RepoPDFConverter:
         try:
             content = self.file_processor.read_file_safe(file_path)
 
+            if self._should_render_markdown_as_raw(rel_path):
+                lang = file_path.suffix.lstrip(".") or "text"
+                raw_block = self._wrap_in_fenced_code_block(content, lang=lang)
+                return f"\n\n# {rel_path}\n\n{raw_block}\n\n"
+
             # Process markdown content
             processed = self.markdown_processor.process_markdown_content(
                 content, file_path, self.repo_path
@@ -316,6 +307,37 @@ class RepoPDFConverter:
         except Exception as e:
             logger.warning(f"Failed to process Markdown file {file_path}: {e}")
             return ""
+
+    def _should_render_markdown_as_raw(self, rel_path: Path) -> bool:
+        """
+        Render certain Markdown files as fenced code blocks without parsing.
+
+        Controlled by config:
+        - `pdf_settings.raw_markdown_paths`
+        - `pdf_settings.raw_markdown_exclude_paths`
+        """
+        from repo_to_pdf.core.path_matching import posix_glob_match_any
+
+        raw_paths = self.config.pdf_settings.raw_markdown_paths
+        if not posix_glob_match_any(rel_path, raw_paths):
+            return False
+
+        exclude_paths = self.config.pdf_settings.raw_markdown_exclude_paths
+        return not posix_glob_match_any(rel_path, exclude_paths)
+
+    def _wrap_in_fenced_code_block(self, content: str, lang: str = "text", min_fence: int = 5) -> str:
+        """
+        Wrap content in a fenced code block, choosing a fence long enough to avoid collisions.
+        """
+        import re
+
+        max_ticks = 0
+        for m in re.finditer(r"^`{3,}", content, flags=re.MULTILINE):
+            max_ticks = max(max_ticks, len(m.group(0)))
+
+        fence = "`" * max(min_fence, max_ticks + 1)
+        body = content if content.endswith("\n") else content + "\n"
+        return f"{fence}{lang}\n{body}{fence}"
 
     def _process_html_file(self, file_path: Path, rel_path: Path) -> str:
         """Process HTML file (convert to Markdown using Pandoc)."""

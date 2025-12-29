@@ -118,6 +118,26 @@ class PDFSettings(BaseModel):
         default=200, ge=40, le=500, description="Maximum line length before hard wrapping"
     )
 
+    # Markdown rendering controls
+    include_hidden_paths: List[str] = Field(
+        default_factory=list,
+        description=(
+            "Repo-relative glob patterns to include files under hidden paths "
+            "(e.g., ['.claude/**'])."
+        ),
+    )
+    raw_markdown_paths: List[str] = Field(
+        default_factory=list,
+        description=(
+            "Repo-relative glob patterns for Markdown files to render as fenced code blocks "
+            "without Markdown parsing (e.g., ['.claude/**/*.md', 'plugins/**/*.md'])."
+        ),
+    )
+    raw_markdown_exclude_paths: List[str] = Field(
+        default_factory=lambda: ["**/README.md"],
+        description="Repo-relative glob patterns excluded from raw_markdown_paths.",
+    )
+
     # Code block visual enhancement settings
     code_block_bg: str = Field(
         default="gray!5",

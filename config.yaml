@@ -26,6 +26,20 @@ pdf_settings:
   code_block_strategy: normal  # 代码块策略：normal | codeblock_for_emoji（必要时用 CodeBlock）
   emoji_download: true  # 允许下载 Twemoji 资源（离线可关闭以复用缓存）
   max_line_length: 200  # 超长行硬折行阈值，防止 Verbatim 溢出
+
+  # Markdown 渲染规则（可选）
+  # - include_hidden_paths: 允许收集隐藏目录下的文件（默认会跳过所有以 . 开头的路径）
+  # - raw_markdown_paths:   命中的 Markdown 直接以“代码块”输出，不解析 Markdown（避免复杂语法/扩展导致 Pandoc 解析问题）
+  # - raw_markdown_exclude_paths: raw_markdown_paths 的排除规则
+  include_hidden_paths:
+    - ".claude/**"
+  raw_markdown_paths:
+    - ".claude/**/*.md"
+    - ".claude/**/*.mdx"
+    - "plugins/**/*.md"
+    - "plugins/**/*.mdx"
+  raw_markdown_exclude_paths:
+    - "**/README.md"
   
   # 字体大小设置（可被设备预设覆盖）
   fontsize: "10pt"

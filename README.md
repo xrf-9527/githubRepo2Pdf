@@ -306,6 +306,16 @@ pdf_settings:
   highlight_style: "tango"       # 代码高亮主题（推荐：tango, kate, pygments, zenburn）
   split_large_files: true        # 将大文件分割成多个部分而不是截断
 
+  # Markdown 渲染规则（可选）
+  # 命中 raw_markdown_paths 的 Markdown 会以 fenced code block 输出，不解析 Markdown。
+  include_hidden_paths:          # 允许收集隐藏目录下的文件（默认跳过以 . 开头的路径）
+    - ".claude/**"
+  raw_markdown_paths:            # 以“原样代码块”输出的 Markdown 路径（仓库根目录相对路径 glob）
+    - ".claude/**/*.md"
+    - "plugins/**/*.md"
+  raw_markdown_exclude_paths:    # raw_markdown_paths 的排除规则
+    - "**/README.md"
+
   # 代码块视觉样式（可选）
   code_block_bg: "gray!5"        # 代码块背景色
   code_block_border: "gray!30"   # 代码块边框色

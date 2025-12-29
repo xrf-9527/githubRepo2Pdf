@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Iterator, List, Optional
 
 from repo_to_pdf.core.config import AppConfig
+from repo_to_pdf.core.path_matching import posix_glob_match_any
 from repo_to_pdf.core.constants import (
     BINARY_EXTENSIONS,
     IMAGE_EXTENSIONS,
@@ -243,13 +244,20 @@ class FileProcessor:
         except Exception as e:
             raise FileProcessingError(f"Failed to read file lines: {file_path}", str(e))
 
-    def collect_files(self, repo_path: Path, include_hidden: bool = False) -> List[Path]:
+    def collect_files(
+        self,
+        repo_path: Path,
+        include_hidden: bool = False,
+        include_hidden_paths: Optional[List[str]] = None,
+    ) -> List[Path]:
         """
         Collect all files in repository that should be processed.
 
         Args:
             repo_path: Repository root path
             include_hidden: Whether to include hidden files (default: False)
+            include_hidden_paths: Repo-relative glob patterns to include files under hidden paths
+                even when include_hidden is False (e.g., ['.claude/**']).
 
         Returns:
             List of file paths to process
@@ -259,6 +267,7 @@ class FileProcessor:
             >>> print(f"Found {len(files)} files to process")
         """
         collected_files = []
+        include_hidden_paths = include_hidden_paths or []
 
         for file_path in sorted(repo_path.rglob("*")):
             # Skip non-files
@@ -268,15 +277,14 @@ class FileProcessor:
             # Skip hidden files unless explicitly included
             if not include_hidden:
                 # Allow specific hidden files like .cursorrules, .gitignore
-                allowed_hidden = {".cursorrules", ".gitignore", ".dockerignore"}
-                if file_path.name.startswith(".") and file_path.name not in allowed_hidden:
-                    continue
+                allowed_hidden = {".cursorrules", ".gitignore", ".dockerignore", ".env.example"}
 
-                # Skip files in hidden directories
-                if any(part.startswith(".") for part in file_path.parts):
-                    # Exception for allowed hidden files
-                    if file_path.name not in allowed_hidden:
-                        continue
+                rel_path = file_path.relative_to(repo_path)
+                rel_has_hidden_part = any(part.startswith(".") for part in rel_path.parts)
+                rel_is_force_included = posix_glob_match_any(rel_path, include_hidden_paths)
+
+                if rel_has_hidden_part and file_path.name not in allowed_hidden and not rel_is_force_included:
+                    continue
 
             # Check if should be ignored
             if self.should_ignore(file_path):

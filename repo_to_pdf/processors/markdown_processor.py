@@ -40,9 +40,9 @@ class MarkdownProcessor:
         3. Process inline images (both remote and local)
         4. Process HTML image tags
         5. Process inline SVG
-        6. Escape backslash-u sequences outside code
-        7. Hard-wrap long lines in code blocks
-        8. Escape YAML delimiters
+        6. Hard-wrap long lines in code blocks
+        7. Escape YAML delimiters
+        8. Final scrub remote images
 
         Args:
             content: Markdown content to process
@@ -68,16 +68,13 @@ class MarkdownProcessor:
         # 5. Process inline SVG
         content = self._process_inline_svg(content)
 
-        # 6. Escape backslash-u sequences outside code blocks
-        content = self._escape_backslash_u_sequences(content)
-
-        # 7. Hard-wrap long lines in code blocks
+        # 6. Hard-wrap long lines in code blocks
         content = self._hard_wrap_code_blocks(content)
 
-        # 8. Escape YAML delimiters
+        # 7. Escape YAML delimiters
         content = self._escape_yaml_delimiters(content)
 
-        # 9. Final scrub of any remaining remote images to avoid Pandoc fetching
+        # 8. Final scrub of any remaining remote images to avoid Pandoc fetching
         content = self._remove_residual_remote_images(content)
 
         return content
@@ -344,54 +341,6 @@ class MarkdownProcessor:
         return re.sub(
             r"<svg\s*.*?>.*?</svg>", process_svg, content, flags=re.DOTALL | re.IGNORECASE
         )
-
-    def _escape_backslash_u_sequences(self, content: str) -> str:
-        """
-        Escape backslashes in code blocks.
-        
-        Since we enabled commandchars=\\\\\\{\\} in LaTeX Highlighting environment
-        (to support emojis), we must escape literal backslashes in code blocks
-        as they would otherwise be interpreted as command starts.
-        
-        Outside code blocks, we rely on Pandoc (with raw_tex disabled) to 
-        correctly escape backslashes in text.
-        """
-        lines = content.splitlines()
-        out = []
-        in_code = False
-        fence = None
-
-        for ln in lines:
-            if not in_code:
-                # Check if entering code block
-                m = re.match(r"^(?P<fence>```+)(?P<info>.*)$", ln)
-                if m:
-                    in_code = True
-                    fence = m.group("fence")
-                    out.append(ln)
-                    continue
-                
-                # Outside code block: Do nothing (Pandoc handles escaping)
-                out.append(ln)
-            else:
-                # In code block
-                if ln.startswith(fence):
-                    try:
-                        # Check if it's really the end fence (length match or longer)
-                        # Standard markdown allows end fence to be longer
-                        if len(ln.split()[0]) >= len(fence):
-                            in_code = False
-                            fence = None
-                            out.append(ln)
-                            continue
-                    except IndexError:
-                        pass
-                
-                # Escape backslashes in code content
-                # \ -> \\
-                out.append(ln.replace("\\", "\\\\"))
-
-        return "\n".join(out)
 
     def _hard_wrap_code_blocks(self, content: str) -> str:
         """
