@@ -325,7 +325,9 @@ class RepoPDFConverter:
         exclude_paths = self.config.pdf_settings.raw_markdown_exclude_paths
         return not posix_glob_match_any(rel_path, exclude_paths)
 
-    def _wrap_in_fenced_code_block(self, content: str, lang: str = "text", min_fence: int = 5) -> str:
+    def _wrap_in_fenced_code_block(
+        self, content: str, lang: str = "text", min_fence: int = 5
+    ) -> str:
         """
         Wrap content in a fenced code block, choosing a fence long enough to avoid collisions.
         """

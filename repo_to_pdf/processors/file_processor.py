@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Iterator, List, Optional
 
 from repo_to_pdf.core.config import AppConfig
-from repo_to_pdf.core.path_matching import posix_glob_match_any
 from repo_to_pdf.core.constants import (
     BINARY_EXTENSIONS,
     IMAGE_EXTENSIONS,
@@ -19,6 +18,7 @@ from repo_to_pdf.core.constants import (
     STREAM_CHUNK_SIZE,
 )
 from repo_to_pdf.core.exceptions import FileProcessingError, ValidationError
+from repo_to_pdf.core.path_matching import posix_glob_match_any
 
 logger = logging.getLogger(__name__)
 
@@ -283,7 +283,11 @@ class FileProcessor:
                 rel_has_hidden_part = any(part.startswith(".") for part in rel_path.parts)
                 rel_is_force_included = posix_glob_match_any(rel_path, include_hidden_paths)
 
-                if rel_has_hidden_part and file_path.name not in allowed_hidden and not rel_is_force_included:
+                if (
+                    rel_has_hidden_part
+                    and file_path.name not in allowed_hidden
+                    and not rel_is_force_included
+                ):
                     continue
 
             # Check if should be ignored

@@ -58,7 +58,9 @@ def posix_glob_match_any(
     """Return True if path matches any pattern in patterns."""
     if not patterns:
         return False
-    return any(posix_glob_match(path, pat, case_sensitive=case_sensitive) for pat in patterns if pat)
+    return any(
+        posix_glob_match(path, pat, case_sensitive=case_sensitive) for pat in patterns if pat
+    )
 
 
 def normalize_patterns(patterns: Iterable[str] | None) -> List[str]:
@@ -72,4 +74,3 @@ def normalize_patterns(patterns: Iterable[str] | None) -> List[str]:
         if pat:
             out.append(pat)
     return out
-

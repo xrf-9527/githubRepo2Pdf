@@ -19,7 +19,12 @@ def claude_code_config(tmp_path: Path) -> AppConfig:
             "mono_font": "Courier",
             "emoji_download": False,
             "include_hidden_paths": [".claude/**"],
-            "raw_markdown_paths": [".claude/**/*.md", ".claude/**/*.mdx", "plugins/**/*.md", "plugins/**/*.mdx"],
+            "raw_markdown_paths": [
+                ".claude/**/*.md",
+                ".claude/**/*.mdx",
+                "plugins/**/*.md",
+                "plugins/**/*.mdx",
+            ],
             "raw_markdown_exclude_paths": ["**/README.md"],
         },
         ignores=["node_modules", "*.pyc", ".git"],
@@ -43,7 +48,9 @@ def claude_code_repo(tmp_path: Path) -> Path:
 
 
 class TestClaudeCodeRawMarkdown:
-    def test_collect_files_includes_dot_claude(self, claude_code_config: AppConfig, claude_code_repo: Path):
+    def test_collect_files_includes_dot_claude(
+        self, claude_code_config: AppConfig, claude_code_repo: Path
+    ):
         converter = RepoPDFConverter(claude_code_config)
         converter.repo_path = claude_code_repo
 
